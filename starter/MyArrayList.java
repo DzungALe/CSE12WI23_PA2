@@ -1,6 +1,7 @@
 class MyArrayList<E> implements MyList<E>
 {
     Object[] data;
+    int size = 0;
     /*
      * Constructors
      */
@@ -52,7 +53,15 @@ class MyArrayList<E> implements MyList<E>
      */
     public void insert(int index, E element)
     {
-
+        //Case where index is null
+        //If length of array is equal allocated size, double Capacity
+        if(data.length == this.size){
+            expandCapacity(data.length * 2);
+        }
+        //Case where insert at middle
+        //Case where insert at end
+        if(index )
+        //Case
     }
 
     /**
@@ -62,7 +71,12 @@ class MyArrayList<E> implements MyList<E>
      */
     public void append(E element)
     {
-
+        //If length of array is equal allocated size, double Capacity
+        if(data.length == this.size){
+            expandCapacity(data.length * 2);
+        }
+        data[size + 1] = element;
+        size++;
     }
 
     /**
@@ -72,7 +86,16 @@ class MyArrayList<E> implements MyList<E>
      */
     public void prepend(E element)
     {
+        //If length of array is equal allocated size, double Capacity
+        if(data.length == this.size){
+            expandCapacity(data.length * 2);
+        }
 
+        //Appending all values of previous element to next element
+        for(int i = 0; i < this.size; i++){
+            data[i+1] = data[i];
+        }
+        data[0] = element;
     }
 
     /**
@@ -83,7 +106,7 @@ class MyArrayList<E> implements MyList<E>
      */
     public E get(int index)
     {
-
+        return (E)data[index];
     }
 
     /**
@@ -96,7 +119,10 @@ class MyArrayList<E> implements MyList<E>
      */
     public E set(int index, E element)
     {
+        E tmp = (E)data[index];
+        data[index] = element;
 
+        return tmp;
     }
 
     /**
@@ -107,7 +133,12 @@ class MyArrayList<E> implements MyList<E>
      */
     public E remove(int index)
     {
-
+        E tmp = (E)data[index];
+        for(int i = index; i < data.length; i++){
+            data[i] = data[i + 1];
+        }
+        size--;
+        return tmp;
     }
 
     /**
@@ -117,6 +148,6 @@ class MyArrayList<E> implements MyList<E>
      */
     public int size()
     {
-
+        return size;
     }
 }
