@@ -10,6 +10,7 @@ class MyArrayList<E> implements MyList<E>
     {
         this.data = new Object[5];
     }
+
     public MyArrayList(int initialCapacity)
     {
         if(initialCapacity < 0){
@@ -22,8 +23,9 @@ class MyArrayList<E> implements MyList<E>
     //Look up lecture notes on shallow copy
     public MyArrayList(E[] Arr)
     {
-
-    }
+        this.data = Arr;
+        size = Arr.length;
+    }   
     
     /**
      * Increase the capacity of underlying array if needed
@@ -33,6 +35,27 @@ class MyArrayList<E> implements MyList<E>
     public void expandCapacity(int requiredCapacity)
     {
         
+        Object[] dataTmp = new Object[data.length];
+
+        //Assign all values of data to dataTmp (temporary data array)
+        for(int i = 0; i < data.length; i++){
+            dataTmp[i] = data[i];
+        }
+        
+        if(data.length == 0){
+            this.data = new Object[5];
+        } else if(data.length + 3 >= requiredCapacity){
+            this.data = new Object[data.length + 3];
+        } else{
+            this.data = new Object[requiredCapacity];
+        }
+
+        
+
+        //Reassign all values of dataTmp to data
+        for(int i = 0; i < this.size; i++){
+            data[i] = dataTmp[i];
+        }
     }
 
     /**
@@ -53,15 +76,20 @@ class MyArrayList<E> implements MyList<E>
      */
     public void insert(int index, E element)
     {
-        //Case where index is null
+        //Case where index is invalid (skips an index)
+        if(index > this.size){
+            throw new IndexOutOfBoundsException();
+        }
         //If length of array is equal allocated size, double Capacity
         if(data.length == this.size){
-            expandCapacity(data.length * 2);
+            expandCapacity(data.length + 3);
+        } 
+
+        for(int i = this.size - 1; i >= index; i--){
+            data[i + 1] = data[i];
         }
-        //Case where insert at middle
-        //Case where insert at end
-        if(index )
-        //Case
+        data[index] = element;
+        this.size++;
     }
 
     /**
@@ -71,11 +99,11 @@ class MyArrayList<E> implements MyList<E>
      */
     public void append(E element)
     {
-        //If length of array is equal allocated size, double Capacity
+        //If length of array is equal allocated size, add 3 to capacity
         if(data.length == this.size){
-            expandCapacity(data.length * 2);
+            expandCapacity(data.length + 3);
         }
-        data[size + 1] = element;
+        data[size] = element;
         size++;
     }
 
@@ -88,14 +116,15 @@ class MyArrayList<E> implements MyList<E>
     {
         //If length of array is equal allocated size, double Capacity
         if(data.length == this.size){
-            expandCapacity(data.length * 2);
+            expandCapacity(data.length + 3);
         }
 
         //Appending all values of previous element to next element
-        for(int i = 0; i < this.size; i++){
-            data[i+1] = data[i];
+        for(int i = this.size - 1; i >= 0; i--){
+            data[i + 1] = data[i];
         }
         data[0] = element;
+        size++;
     }
 
     /**
@@ -106,6 +135,9 @@ class MyArrayList<E> implements MyList<E>
      */
     public E get(int index)
     {
+        if(index > data.length || index < 0){
+            throw new IndexOutOfBoundsException();
+        }
         return (E)data[index];
     }
 
@@ -119,6 +151,10 @@ class MyArrayList<E> implements MyList<E>
      */
     public E set(int index, E element)
     {
+        if(index > data.length || index < 0){
+            throw new IndexOutOfBoundsException();
+        }
+
         E tmp = (E)data[index];
         data[index] = element;
 
@@ -133,10 +169,15 @@ class MyArrayList<E> implements MyList<E>
      */
     public E remove(int index)
     {
+        if(index >= data.length || index < 0){
+            throw new IndexOutOfBoundsException();
+        }
+
         E tmp = (E)data[index];
-        for(int i = index; i < data.length; i++){
+        for(int i = index; i < data.length - 1; i++){
             data[i] = data[i + 1];
         }
+        data[data.length - 1] = null;
         size--;
         return tmp;
     }

@@ -4,6 +4,15 @@ import org.junit.*;
 
 public class MyArrayListHiddenTester {
     // Do not change the method signatures!
+    static final int inval_CAPACITY = -1;
+
+    Object[] emptyArr = new Object[10];
+
+    Integer[] nullArr = {null, null, null};
+    Integer[] intArr = {1, 2, 3};
+    Integer[] mixArr = {null, 2, null};
+
+    private MyArrayList nullArrList, intArrList, mixArrList, fullArrList;
     /**
      * This sets up the test fixture. JUnit invokes this method before
      * every testXXX method. The @Before tag tells JUnit to run this method
@@ -11,16 +20,21 @@ public class MyArrayListHiddenTester {
      */
     @Before
     public void setUp() throws Exception {
-        
+        nullArrList = new MyArrayList(nullArr);
+        intArrList = new MyArrayList(intArr);
+        mixArrList = new MyArrayList(mixArr);
+
+        fullArrList = new MyArrayList(intArr);
+        fullArrList.size = fullArrList.data.length;
     }
 
     /**
      * Aims to test the constructor when the input argument
      * is not valid
      */
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testConstructorInvalidArg(){
-        
+        MyArrayList invalidArr = new MyArrayList(inval_CAPACITY);
     }
 
     /**
@@ -28,7 +42,7 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testConstructorNullArg(){
-
+        assertEquals(new Object[]{null,null,null}, nullArrList.data);
     }
 
     /**
@@ -36,7 +50,7 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testConstructorArrayWithNull(){
-
+        assertEquals(new Object[]{null, 2, null}, mixArrList.data);
     }
 
     /**
@@ -45,7 +59,11 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testAppendAtCapacity(){
-        
+        fullArrList.append(4);
+
+        assertEquals(4, fullArrList.get(3));
+        assertEquals(6, fullArrList.data.length);
+        assertEquals(4, fullArrList.size);
     }
 
     /**
@@ -54,7 +72,11 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testAppendNull(){
-        
+        fullArrList.append(null);
+
+        assertEquals(new Object[]{1, 2, 3, null, null, null}, fullArrList.data);
+        assertEquals(6, fullArrList.data.length);
+        assertEquals(4, fullArrList.size);
     }
 
     /**
@@ -63,7 +85,11 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testPrependAtCapacity(){
-        
+        fullArrList.prepend(0);
+
+        assertEquals(0, fullArrList.get(0));
+        assertEquals(6, fullArrList.data.length);
+        assertEquals(4, fullArrList.size);
     }
     
     /**
@@ -73,15 +99,21 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testPrependNull(){
+        fullArrList.prepend(null);
+
+        assertEquals(new Object[]{null, 1, 2, 3, null, null}, fullArrList.data);
+        assertEquals(6, fullArrList.data.length);
+        assertEquals(4, fullArrList.size);
+
         
     }
     
     /**
      * Aims to test the insert method when input index is out of bounds
      */
-    @Test
+    @Test(expected = IndexOutOfBoundsException.class)
     public void testInsertOutOfBound(){
-       
+       fullArrList.insert(5, 5);
     }
 
     /**
@@ -91,23 +123,28 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testInsertMultiple(){
-        
+        for(int i = 4; i <= 10; i++){
+            fullArrList.append(i);
+        }
+
+        assertEquals(12, fullArrList.data.length);
+        assertEquals(10, fullArrList.size);
     }
 
     /**
      * Aims to test the get method when input index is out of bound
      */
-    @Test
+    @Test(expected = IndexOutOfBoundsException.class)
     public void testGetOutOfBound(){
-        
+        fullArrList.get(4);
     }
 
     /**
      * Aims to test the set method when input index is out of bound
      */
-    @Test
+    @Test(expected = IndexOutOfBoundsException.class)
     public void testSetOutOfBound(){
-        
+        fullArrList.set(4, null);
     }
 
     /**
@@ -115,15 +152,24 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testRemoveMultiple(){
+        fullArrList.remove(0);
+        fullArrList.remove(0);
+
+        assertEquals(3, fullArrList.data.length);
+        assertEquals(1, fullArrList.size);
+        assertEquals(new Object[]{3, null, null}, fullArrList.data);
         
+        fullArrList.remove(0);
+        assertEquals(3, fullArrList.data.length);
+        assertEquals(0, fullArrList.size);
     }
 
     /**
      * Aims to test the remove method when input index is out of bound
      */
-    @Test
+    @Test(expected = IndexOutOfBoundsException.class)
     public void testRemoveOutOfBound(){
-        
+        fullArrList.remove(4);
     }
 
     /**
@@ -132,7 +178,9 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testExpandCapacitySmaller(){
-       
+        fullArrList.expandCapacity(4);
+
+        assertEquals(6, fullArrList.data.length);
     }
 
     /**
@@ -141,7 +189,9 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testExpandCapacityLarge(){
-        
+        fullArrList.expandCapacity(100);
+
+        assertEquals(100, fullArrList.data.length);
     }
     
 
